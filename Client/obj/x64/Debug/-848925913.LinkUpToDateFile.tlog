@@ -1,0 +1,1 @@
+g++ -o "/home/vlad/projects/Client/bin/x64/Debug/Client.out" -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack /home/vlad/projects/Client/obj/x64/Debug/Chat.o /home/vlad/projects/Client/obj/x64/Debug/main.o /home/vlad/projects/Client/obj/x64/Debug/Message.o /home/vlad/projects/Client/obj/x64/Debug/User.o

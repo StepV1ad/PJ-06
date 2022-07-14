@@ -1,0 +1,14 @@
+﻿  Validating sources
+  Copying sources remotely to '192.168.98.128'
+  Validating architecture
+  Validating architecture
+  Starting remote build
+  Compiling sources:
+  Chat.cpp
+D:\MVS_project\SkillFactory\Dz25\Server\Chat.h(2): warning : ignoring #pragma comment  [-Wunknown-pragmas]
+D:\MVS_project\SkillFactory\Dz25\Server\Chat.h(2): warning :     2 | #pragma comment (lib, "ws2_32.lib")
+D:\MVS_project\SkillFactory\Dz25\Server\Chat.h(2): warning :       |
+D:\MVS_project\SkillFactory\Dz25\Server\Chat.cpp(3,10): error : mysql.h: No such file or directory
+D:\MVS_project\SkillFactory\Dz25\Server\Chat.cpp(3,10): error :     3 | #include <mysql.h>
+D:\MVS_project\SkillFactory\Dz25\Server\Chat.cpp(3,10): error :       |          ^~~~~~~~~
+D:\MVS_project\SkillFactory\Dz25\Server\Chat.cpp(3,10): error : compilation terminated.
