@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Chat.h"
-#include <mysql.h>
+#include </usr/include/mysql/mysql.h>
 
 MYSQL mysql;
 MYSQL_RES* res;
@@ -34,31 +34,50 @@ void Chat::socketTCP()
 
 bool Chat::checkLogin(const std::string& login)
 {
-	for (auto& user : users_)
+	mysql_query(&mysql, "SELECT login FROM user");
+	if (res = mysql_store_result(&mysql))
+		while (row = mysql_fetch_row(res))
+			for (int i = 0; i < mysql_num_fields(res); i++)
+				if (row[i] == login.c_str())
+					return true;
+
+	/*for (auto& user : users_)
 	{
 		if (login == user.getUserLogin())
 			return true;
-	}
+	}*/
 	return false;
 }
 
 bool Chat::checkName(const std::string& name)
 {
-	for (auto& user : users_)
+	mysql_query(&mysql, "SELECT name FROM user");
+	if (res = mysql_store_result(&mysql))
+		while (row = mysql_fetch_row(res))
+			for (int i = 0; i < mysql_num_fields(res); i++)
+				if (row[i] == name.c_str())
+					return true;
+	/*for (auto& user : users_)
 	{
 		if (name == user.getUserName())
 			return true;
-	}
+	}*/
 	return false;
 }
 
 bool Chat::checkPassword(const std::string& login, const std::string& password)
 {
-	for (auto& user : users_)
+	mysql_query(&mysql, "SELECT password FROM pwd");
+	if (res = mysql_store_result(&mysql))
+		while (row = mysql_fetch_row(res))
+			for (int i = 0; i < mysql_num_fields(res); i++)
+				if (row[i] == login.c_str())
+					return true;
+	/*for (auto& user : users_)
 	{
 		if (login == user.getUserLogin())
 			return (password == user.getUserPassword()) ? true : false;
-	}
+	}*/
 	return false;
 }
 
@@ -94,6 +113,18 @@ void Chat::signUp()
 	user.setID(++idStorage_);
 	users_.emplace_back(user);
 	currentUser_ = std::make_shared<User>(user);
+
+	char insL[200] = "INSERT INTO user(id, login, name) values(default,'";
+	strcat(insL, login.c_str());
+	strcat(insL, "','");
+	strcat(insL, name.c_str());
+	strcat(insL, "')");
+	mysql_query(&mysql, insL);
+
+	char insP[200] = "INSERT INTO pwd(id, password) values(default,'";
+	strcat(insP, password.c_str());
+	strcat(insP, "')");
+	mysql_query(&mysql, insP);
 }
 
 void Chat::login()
@@ -231,7 +262,7 @@ void Chat::changeUser()
 
 void Chat::showUsers()
 {
-	for (size_t inf = 1; inf < users_.size(); ++inf) // íå èñïîëüçóåòñÿ foreach äëÿ ñîêðûòèÿ admin
+	for (size_t inf = 1; inf < users_.size(); ++inf) // Ð½Ðµ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÑ‚ÑÑ foreach Ð´Ð»Ñ ÑÐ¾ÐºÑ€Ñ‹Ñ‚Ð¸Ñ admin
 	{
 		std::cout << "User #" << inf << ": " << users_[inf].getUserName() << "\n";
 	}
@@ -294,7 +325,7 @@ void Chat::wrightCommonChatFile()
 			commonChat_file << commonChat.getFrom() << " " << commonChat.getTo() << " " << commonChat.getText() << std::endl;
 }
 
-void Chat::admin() // äîï ïîëüçîâàòåëü, ðåãèñòðèðóåìûé ïðè ñòàðòå ðàáîòû ÷àòà
+void Chat::admin() // Ð´Ð¾Ð¿ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒ, Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð¸Ñ€ÑƒÐµÐ¼Ñ‹Ð¹ Ð¿Ñ€Ð¸ ÑÑ‚Ð°Ñ€Ñ‚Ðµ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ñ‡Ð°Ñ‚Ð°
 {
 	for (auto& user : users_)
 	{
@@ -350,6 +381,7 @@ void Chat::showPrivateChat()
 void Chat::start()
 {
 	socketTCP();
+	dataBase();
 	chatWork_ = true;
 	readUserFile();
 	readMessageFile();
@@ -385,6 +417,7 @@ void Chat::showLoginMenu()
 			wrightUserFile();
 			wrightMessageFile();
 			wrightCommonChatFile();
+			mysql_close(&mysql);
 			close(socket_file_descriptor);
 			chatWork_ = false;
 			break;
